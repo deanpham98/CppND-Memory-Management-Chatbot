@@ -2,6 +2,7 @@
 #include <random>
 #include <algorithm>
 #include <ctime>
+#include <memory>
 
 #include "chatlogic.h"
 #include "graphnode.h"
@@ -11,6 +12,8 @@
 // constructor WITHOUT memory allocation
 ChatBot::ChatBot()
 {
+    std::cout << "ChatBot Constructor without Parameters" << std::endl;
+
     // invalidate data handles
     _image = nullptr;
     _chatLogic = nullptr;
@@ -20,30 +23,45 @@ ChatBot::ChatBot()
 // constructor WITH memory allocation
 ChatBot::ChatBot(std::string filename)
 {
-    std::cout << "ChatBot Constructor" << std::endl;
+    std::cout << "ChatBot Constructor with Parameters" << std::endl;
     
     // invalidate data handles
     _chatLogic = nullptr;
     _rootNode = nullptr;
 
     // load image into heap memory
-    _image = new wxBitmap(filename, wxBITMAP_TYPE_PNG);
+    _image = std::make_unique<wxBitmap>(filename, wxBITMAP_TYPE_PNG);
 }
 
 ChatBot::~ChatBot()
 {
     std::cout << "ChatBot Destructor" << std::endl;
 
-    // deallocate heap memory
-    if(_image != NULL) // Attention: wxWidgets used NULL and not nullptr
-    {
-        delete _image;
-        _image = NULL;
-    }
+    // // deallocate heap memory
+    // if(_image != NULL) // Attention: wxWidgets used NULL and not nullptr
+    // {
+    //     delete _image;
+    //     _image = NULL;
+    // }
 }
 
 //// STUDENT CODE
 ////
+
+// Move-Assignment
+ChatBot& ChatBot::operator=(ChatBot&& src) noexcept {
+    std::cout << "ChatBot Move Assignment" << std::endl;
+
+    if (this != &src) {
+        _image = std::move(src._image);
+
+        _currentNode = src._currentNode;
+        _rootNode = src._rootNode;
+        _chatLogic = src._chatLogic;
+    }
+
+    return *this;
+}
 
 ////
 //// EOF STUDENT CODE
