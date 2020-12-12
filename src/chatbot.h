@@ -14,7 +14,7 @@ class ChatBot
 {
 private:
     // data handles (owned)
-    std::unique_ptr<wxBitmap> _image; // avatar image
+    wxBitmap* _image; // avatar image
 
     // data handles (not owned)
     GraphNode *_currentNode;
@@ -34,18 +34,13 @@ public:
     ////
 
     // Copy-Constructor
-    ChatBot(const ChatBot&) = delete;
+    ChatBot(const ChatBot&);
 
     // Move-Constructor
-    ChatBot(ChatBot&& src) noexcept : _image(std::move(src._image)), \
-                                      _currentNode(src._currentNode), \
-                                      _rootNode(src._rootNode), \
-                                      _chatLogic(src._chatLogic) {
-        std::cout << "ChatBot Move Constructor" << std::endl;
-    }
+    ChatBot(ChatBot&&) noexcept;
 
     // Copy-Assignment
-    ChatBot& operator=(const ChatBot&) = delete;
+    ChatBot& operator=(const ChatBot&);
 
     // Move-Assignment
     ChatBot& operator=(ChatBot&&) noexcept;
@@ -57,7 +52,7 @@ public:
     void SetCurrentNode(GraphNode *node);
     void SetRootNode(GraphNode *rootNode) { _rootNode = rootNode; }
     void SetChatLogicHandle(ChatLogic *chatLogic) { _chatLogic = chatLogic; }
-    wxBitmap *GetImageHandle() { return _image.get(); }
+    wxBitmap *GetImageHandle() { return _image; }
 
     // communication
     void ReceiveMessageFromUser(std::string message);
